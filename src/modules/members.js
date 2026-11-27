@@ -24,6 +24,7 @@ const fields = {
   monthly: positiveTaka,
   status: STATUS,
 };
+export const memberFields = fields; // lead members accept the same personal details
 const createBody = z.strictObject(fields).partial().required({ name: true });
 const updateBody = z.strictObject(fields).partial();
 

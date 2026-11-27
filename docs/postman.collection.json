@@ -56,6 +56,14 @@
       "value": ""
     },
     {
+      "key": "leadId",
+      "value": ""
+    },
+    {
+      "key": "newLeadId",
+      "value": ""
+    },
+    {
       "key": "paymentId",
       "value": ""
     },
@@ -670,10 +678,10 @@
           }
         },
         {
-          "name": "Apply to become a member (creates a pending member)",
+          "name": "Apply to become a member (waits in Lead Members until accepted)",
           "request": {
             "method": "POST",
-            "description": "Apply to become a member (creates a pending member).",
+            "description": "Apply to become a member (waits in Lead Members until accepted).",
             "auth": {
               "type": "noauth"
             },
@@ -2263,6 +2271,192 @@
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"status\": \"active\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lead members",
+          "item": [
+            {
+              "name": "List applications waiting to be accepted",
+              "request": {
+                "method": "GET",
+                "description": "List applications waiting to be accepted.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-leads",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-leads"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt",
+                      "disabled": true,
+                      "description": "createdAt | name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('leadId', value);",
+                      "}",
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = (body.data.find(row => row.name === 'Postman Applicant') || {}).id;",
+                      "  if (value) pm.collectionVariables.set('newLeadId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "View a lead",
+              "request": {
+                "method": "GET",
+                "description": "View a lead.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-leads/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-leads",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{leadId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update a lead",
+              "request": {
+                "method": "PATCH",
+                "description": "Update a lead.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-leads/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-leads",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newLeadId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"note\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Accept a lead: it becomes an active member",
+              "request": {
+                "method": "POST",
+                "description": "Accept a lead: it becomes an active member.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-leads/:id/accept",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-leads",
+                    ":id",
+                    "accept"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newLeadId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"joinDate\": \"2026-11-01\",\n  \"monthly\": 500\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -5607,6 +5801,32 @@
                 {
                   "key": "id",
                   "value": "{{newWebsiteAccountId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Lead members: Delete a lead",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete a lead.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/member-leads/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "member-leads",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newLeadId}}"
                 }
               ]
             }

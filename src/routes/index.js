@@ -1,6 +1,7 @@
 import { createApi } from '../lib/api.js';
 import authRoutes from '../modules/auth.js';
 import investmentRoutes from '../modules/investments.js';
+import leadRoutes from '../modules/leads.js';
 import memberRoutes from '../modules/members.js';
 import paymentRoutes from '../modules/payments.js';
 import publicRoutes from '../modules/public.js';
@@ -18,6 +19,7 @@ authRoutes(api);
 publicRoutes(api);
 usersRoutes(api);
 memberRoutes(api);
+leadRoutes(api);
 submissionRoutes(api); // before paymentRoutes: "/payments/mine" must win over "/payments/:id"
 paymentRoutes(api);
 investmentRoutes(api);

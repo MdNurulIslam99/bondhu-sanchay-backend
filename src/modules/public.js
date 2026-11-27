@@ -6,10 +6,9 @@ import { cleanHtml } from '../lib/html.js';
 import { send } from '../lib/respond.js';
 import { optionalText, phone, text } from '../lib/schemas.js';
 import { limiter } from '../lib/security.js';
-import { audit, transaction, view } from '../lib/tx.js';
-import { Faq, Member, Notice, PageSection } from '../models/index.js';
+import { audit, lock, transaction, view } from '../lib/tx.js';
+import { Faq, Member, MemberLead, Notice, PageSection } from '../models/index.js';
 import { loadLedger } from './ledger.js';
-import { nextSerial } from './members.js';
 import { getSettings, publicSettings } from './settings.js';
 import { orderedPages, sectionSort } from './website.js';
 
@@ -100,20 +99,19 @@ export default function publicRoutes(api) {
   }
 
   api.post('/public/member-applications', {
-    tag, summary: 'Apply to become a member (creates a pending member)', limit: limiter(5),
+    tag, summary: 'Apply to become a member (waits in Lead Members until accepted)', limit: limiter(5),
     // `website` is a honeypot: real visitors never see or fill it.
     body: z.strictObject({ name: text(80).min(2), phone, nid: z.union([z.literal(''), z.string().regex(/^\d{10,17}$/, 'NID must be 10–17 digits')]).optional(),
       address: optionalText(1000).optional(), nominee: optionalText(200).optional(), website: z.string().max(200).optional(), captchaToken: z.string().max(4000).optional() }),
   }, async (req, res) => {
     const { website, captchaToken, ...input } = req.input.body;
     if (!website) {
-      const settings = await getSettings();
       await transaction(async session => {
-        const sl = await nextSerial(session);
-        // An existing number gets the same reply, so this form cannot be used to look members up.
-        if (await Member.exists({ phone: input.phone }).session(session)) return;
-        const [row] = await Member.create([{ ...input, sl, monthly: settings.monthlyAmount, status: 'pending' }], { session });
-        await audit({ name: 'website visitor', ip: req.ip }, 'Applied for membership', 'members', row._id, { after: view(row), session });
+        await lock('members', session);
+        // A known number gets the same reply, so this form cannot be used to look members up.
+        if (await Member.exists({ phone: input.phone }).session(session) || await MemberLead.exists({ phone: input.phone }).session(session)) return;
+        const [row] = await MemberLead.create([input], { session });
+        await audit({ name: 'website visitor', ip: req.ip }, 'Applied for membership', 'member-leads', row._id, { after: view(row), session });
       });
     }
     send(res, null, { status: 202, message: 'Your application has been received.' });

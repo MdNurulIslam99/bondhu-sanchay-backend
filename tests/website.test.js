@@ -91,14 +91,16 @@ test('admin changes appear on the public website, and private data never does', 
     const replies = [await apply({}), await apply({})];
     assert.deepEqual(replies.map(reply => reply.status), [202, 202]);
     assert.equal(replies[0].body.data, null);
-    assert.equal(await app.models.Member.countDocuments(), 1);
-    const [pending] = await root.get('/members?status=pending');
+    // An application waits as a lead; it is not a member yet.
+    assert.equal(await app.models.MemberLead.countDocuments(), 1);
+    assert.equal(await app.models.Member.countDocuments(), 0);
     assert.deepEqual(await open('/public/members'), []);
-    await root.ok('PATCH', `/members/${pending.id}/status`, { status: 'active' });
+    const [lead] = await root.get('/member-leads');
+    const member = await root.ok('POST', `/member-leads/${lead.id}/accept`);
     const [listed] = await open('/public/members');
     assert.equal(listed.phoneMasked, '0175•••5555');
     assert.equal(JSON.stringify(listed).includes('01755555555'), false);
-    assert.equal((await root.get(`/members/${pending.id}`)).joinDate.length, 10);
+    assert.equal((await root.get(`/members/${member.id}`)).joinDate.length, 10);
   });
 
   await t.test('images are checked by content and served publicly', async () => {

@@ -27,6 +27,8 @@ const bodies = {
   'POST /members': { name: 'Postman Test Member', phone: '01700000097', nid: '', address: 'Dhaka', nominee: '', joinDate: '2026-11-01', monthly: 500, status: 'pending' },
   'PATCH /members/:id': { address: 'Chattogram' },
   'PATCH /members/:id/status': { status: 'active' },
+  'PATCH /member-leads/:id': { note: 'Updated from Postman' },
+  'POST /member-leads/:id/accept': { joinDate: '2026-11-01', monthly: 500 },
   'POST /payment-submissions': { memberId: '{{newMemberId}}', date: '2026-11-01', amount: 500, month: '2026-11', category: 'savings', type: 'Cash', trxId: '', description: 'Postman test' },
   'PATCH /payment-submissions/:id': { description: 'Updated from Postman' },
   'POST /payment-submissions/:id/review': { decision: 'rejected', note: 'Postman test' },
@@ -61,7 +63,7 @@ const bodies = {
 
 // Path prefix -> variable name. GET uses "{{name}}Id" (filled by the list), changes use "new{{Name}}Id".
 const resources = {
-  members: 'member', payments: 'payment', 'payment-submissions': 'submission', 'admin/payments': 'submission', withdrawals: 'withdrawal',
+  members: 'member', 'member-leads': 'lead', payments: 'payment', 'payment-submissions': 'submission', 'admin/payments': 'submission', withdrawals: 'withdrawal',
   'investment-accounts': 'account', investments: 'investment', profits: 'profit', projects: 'project', 'page-names': 'page',
   'page-sections': 'section', faqs: 'faq', notices: 'notice', users: 'user', 'user-permissions': 'permission', 'member-accounts': 'websiteAccount',
 };
@@ -93,6 +95,11 @@ function testsFor(route) {
   if (path === '/auth/signup') return save('newWebsiteAccountId', 'body.data.user.id');
   if (path === '/auth/password/forgot') return save('resetToken', 'body.data.resetToken');
   if (path === '/uploads') return save('fileName', "body.data.url.split('/').pop()");
+  // Leads come from the website form, so changes are aimed at the one Postman's own application made.
+  if (method === 'get' && path === '/member-leads') return [
+    ...save('leadId', 'body.data[0] && body.data[0].id'),
+    ...save('newLeadId', "(body.data.find(row => row.name === 'Postman Applicant') || {}).id"),
+  ];
   const name = resources[prefixOf(path)];
   if (!name || path.includes(':')) return null;
   if (method === 'post' && path === `/${prefixOf(path)}`) return save(`new${capital(name)}Id`, 'body.data.id');
@@ -155,7 +162,7 @@ export function postmanCollection(routes) {
   const isPublic = route => route.tag !== 'Auth' && (!route.access || route.access === 'public');
   const memberOnly = route => route.access === 'member' || ['/payments/mine', '/public/payment-submissions'].includes(route.path);
   const isAdmin = route => Array.isArray(route.access) || ['staff', 'superadmin'].includes(route.access) || ['GET /members', 'GET /members/:id', 'GET /dashboard'].includes(key(route));
-  const cleanupOrder = ['projects', 'investments', 'investment-accounts', 'page-sections', 'page-names', 'faqs', 'notices', 'user-permissions', 'users', 'member-accounts', 'members'];
+  const cleanupOrder = ['projects', 'investments', 'investment-accounts', 'page-sections', 'page-names', 'faqs', 'notices', 'user-permissions', 'users', 'member-accounts', 'member-leads', 'members'];
 
   const admin = new Map();
   for (const route of list.filter(item => isAdmin(item) && item.method !== 'delete')) {
