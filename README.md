@@ -132,6 +132,10 @@ Vercel runs `src/app.js` as a function; `server.js` is not used there.
 3. Redeploy after every change to the variables.
 4. Run `db:migrate`, `db:import` and `admin:create` from your computer against the same database.
 
+**Keep the function next to the database.** A request makes several database round trips, so a distance
+between them is paid several times. `vercel.json` runs the function in `bom1` (Mumbai) because the Atlas
+cluster is in AWS `ap-south-1` (Mumbai). If the cluster moves, change `regions` to match.
+
 Vercel cannot `require()` ES-module-only packages. `overrides` in `package.json` keeps `htmlparser2`
 (used by `sanitize-html`) on a version that still supports it; `tests/deploy.test.js` checks this.
 

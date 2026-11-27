@@ -29,9 +29,11 @@ export async function sendList(res, { model, filter = {}, query, map, name, colu
   const csv = query.format === 'csv';
   const find = model.find(filter).sort(sort).limit(csv ? CSV_ROW_LIMIT : query.limit);
   if (!csv) find.skip((query.page - 1) * query.limit);
-  const rows = await map(await find.lean());
+  // The page and the total are read together.
+  const [found, total] = await Promise.all([find.lean(), csv ? 0 : model.countDocuments(filter)]);
+  const rows = await map(found);
   if (csv) return sendCsv(res, name, columns, rows);
-  send(res, rows, { pagination: pagination(query, await model.countDocuments(filter)), ...extra });
+  send(res, rows, { pagination: pagination(query, total), ...extra });
 }
 
 /** The same behaviour for rows that are computed in memory (dues, reports). */

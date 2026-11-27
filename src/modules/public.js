@@ -67,15 +67,17 @@ export default function publicRoutes(api) {
     send(res, data);
   };
   const get = (path, text_, read) => api.get(path, { tag, summary: text_ }, async (req, res) => {
-    const settings = await getSettings();
-    publish(res, await read(req, settings), settings.contentUpdatedAt);
+    // Read side by side, so the visitor does not wait for one database round trip after another.
+    const [settings, data] = await Promise.all([getSettings(), read(req)]);
+    publish(res, data, settings.contentUpdatedAt);
   });
 
-  get('/public/site-content', 'Settings, pages, FAQs, notices and projects in one response', async (req, settings) => {
+  get('/public/site-content', 'Settings, pages, FAQs, notices and projects in one response', async () => {
     const [pages, faqs, notices, ledger] = await Promise.all([publicPages(), publicFaqs(), publicNotices(), loadLedger()]);
+    const { settings } = ledger;
     return { updatedAt: settings.contentUpdatedAt, settings: publicSettings(settings), summary: summary(ledger), pages, faqs, notices, projects: publicProjects(ledger) };
   });
-  get('/public/settings', 'Organization details', async (req, settings) => publicSettings(settings));
+  get('/public/settings', 'Organization details', async () => publicSettings(await getSettings()));
   get('/public/summary', 'Member count and fund totals', async () => summary(await loadLedger()));
   get('/public/faqs', 'Published FAQs', publicFaqs);
   get('/public/notices', 'Published notices, newest first', publicNotices);

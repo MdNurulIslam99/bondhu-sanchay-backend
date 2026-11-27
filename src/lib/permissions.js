@@ -71,8 +71,8 @@ export async function permissionsOf(user) {
     for (const [key, module] of Object.entries(MODULES)) actions[key] = module.actions;
     return { pages: Object.keys(MODULES), actions };
   }
-  const row = await UserPermission.findOne({ userId: user._id, status: 'active' }).lean();
-  const role = (await roleActions())[user.role] || {};
+  const [row, roles] = await Promise.all([UserPermission.findOne({ userId: user._id, status: 'active' }).lean(), roleActions()]);
+  const role = roles[user.role] || {};
   for (const key of row?.pages || []) {
     const module = MODULES[key];
     if (!module || module.superOnly) continue;
