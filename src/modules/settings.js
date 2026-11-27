@@ -32,7 +32,8 @@ export async function getSettings(session) {
 }
 
 export const publicSettings = settings => Object.fromEntries(
-  ['orgName', 'tagline', 'about', 'phone', 'monthlyAmount', 'dueDay', 'collectionStart', 'publicShowMoney'].map(key => [key, settings[key]]));
+  ['orgName', 'tagline', 'about', 'phone', 'monthlyAmount', 'dueDay', 'collectionStart', 'lastCollectionMonth', 'profitThroughMonth', 'publicShowMoney']
+    .map(key => [key, settings[key]]));
 
 /** Record that website content changed, and ask the website to refresh if a webhook is configured. */
 export async function contentChanged() {
