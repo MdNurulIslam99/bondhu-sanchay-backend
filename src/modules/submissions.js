@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import { linkedMember } from '../lib/api.js';
 import { today } from '../domain/calculations.js';
-import { conflict, invalid, notFound } from '../lib/errors.js';
+import { conflict, forbidden, invalid, notFound } from '../lib/errors.js';
 import { contains, send, sendList } from '../lib/respond.js';
 import { date, listQuery, month, objectId, optionalText, positiveTaka } from '../lib/schemas.js';
 import { limiter } from '../lib/security.js';
@@ -180,6 +180,18 @@ export async function reviewSubmission(req, id, decision, options = {}, { repeat
   return { ...outcome, balances: { before, after: await balances() } };
 }
 
+/** Take whatever a verified payment added back out of every balance. Does nothing for other statuses. */
+async function removeFromBalance(row, session) {
+  await Payment.updateMany({ submissionId: row._id, status: 'verified' }, { status: 'reversed' }, { session });
+  await LedgerEntry.updateMany({ submissionId: row._id, active: true }, { active: false }, { session });
+  if (row.appliedAccountId) {
+    const profit = await Profit.findOne({ accountId: row.appliedAccountId, month: row.appliedMonth }).session(session);
+    if (!profit || profit.collected < row.amount) throw conflict('The profit record was edited. Correct it first, then try again.', 'PROFIT_CHANGED');
+    profit.collected -= row.amount;
+    await profit.save({ session });
+  }
+}
+
 /** Super admin correction: undo a review so that the payment is pending again. */
 async function reopen(req, id, reason) {
   return transaction(async session => {
@@ -189,20 +201,32 @@ async function reopen(req, id, reason) {
     if (row.status === 'pending') throw conflict('This payment is already pending.', 'NOT_REVIEWED');
     const before = view(row);
     if (row.status === 'rejected') await assertNewTransaction(row, session, row._id);
-    await Payment.updateMany({ submissionId: row._id, status: 'verified' }, { status: 'reversed' }, { session });
-    await LedgerEntry.updateMany({ submissionId: row._id, active: true }, { active: false }, { session });
-    if (row.appliedAccountId) {
-      const profit = await Profit.findOne({ accountId: row.appliedAccountId, month: row.appliedMonth }).session(session);
-      if (!profit || profit.collected < row.amount) throw conflict('The profit record was edited. Correct it before reopening this payment.', 'PROFIT_CHANGED');
-      profit.collected -= row.amount;
-      await profit.save({ session });
-    }
+    await removeFromBalance(row, session);
     row.set({ status: 'pending', active: true, reviewedBy: undefined, reviewedByName: undefined, reviewedAt: undefined, reviewNote: '', appliedAccountId: undefined, appliedMonth: undefined });
     await row.save({ session });
     await audit(actorOf(req), 'Reopened payment', 'payment-submissions', row._id, { before, after: { ...view(row), reason }, session });
     return row;
   });
 }
+
+/**
+ * Delete a payment of any status. Its money leaves the balance in the same transaction. Deposits it
+ * created stay as reversed history, and the audit log keeps a copy of the deleted record.
+ */
+async function remove(req, id) {
+  return transaction(async session => {
+    await lock('finance', session);
+    const row = await Submission.findById(id).session(session);
+    if (!row) throw notFound('Payment not found');
+    const before = view(row);
+    await removeFromBalance(row, session);
+    await row.deleteOne({ session });
+    await audit(actorOf(req), 'Deleted payment', 'payment-submissions', row._id, { before, session });
+  });
+}
+
+// Deleting is fixed to these roles; Role Actions cannot give it to anyone else.
+const DELETE_ROLES = new Set(['super_admin', 'admin']);
 
 const reviewOptions = {
   note: optionalText(500).optional(), months: months.optional(), confirmAmountMismatch: z.boolean().optional(),
@@ -292,6 +316,11 @@ export default function submissionRoutes(api) {
     });
     api.post(`${base}/:id/reopen`, { tag, summary: 'Undo a review (super admin)', access: 'superadmin', body: z.strictObject({ reason: z.string().trim().min(3).max(500) }) },
       async (req, res) => send(res, submissionView(await reopen(req, req.input.params.id, req.input.body.reason)), { message: 'Payment is pending again' }));
+    api.delete(`${base}/:id`, { tag, summary: 'Delete a payment (super admin or admin)', access: ['payment-submissions', 'view'] }, async (req, res) => {
+      if (!DELETE_ROLES.has(req.user.role)) throw forbidden('Only a Super Admin or Admin can delete a payment.');
+      await remove(req, req.input.params.id);
+      send(res, null, { message: 'Payment deleted' });
+    });
   }
 
   api.post('/admin/payments/:id/approve', { tag, summary: 'Approve a payment (safe to repeat)', access: ['payment-submissions', 'update'], body: z.strictObject(reviewOptions) }, async (req, res) => {

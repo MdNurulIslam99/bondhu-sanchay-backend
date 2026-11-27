@@ -110,7 +110,8 @@ The static export cannot show new projects or members. Fetch in the browser (for
 - Expected profit counts entries with status `running` (the admin panel's rule), so completing an
   entry also removes it from past expected amounts.
 - Pending applicants owe nothing. Inactive members stop owing after the month they were deactivated.
-- Financial records are reversed or rejected, never deleted.
+- Financial records are reversed or rejected, never deleted. The one exception: a super admin or admin
+  can delete a payment submission. Its money leaves the balance and the audit log keeps a copy.
 - Images are stored in MongoDB (max 5 MB each).
 - Message Inbox is switched off; see `src/modules/messages.js`.
 

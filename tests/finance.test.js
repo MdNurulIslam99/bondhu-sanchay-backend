@@ -89,6 +89,32 @@ test('payments, submissions, withdrawals, investments and reports', { timeout: 1
     assert.equal(await collection(), before);
   });
 
+  await t.test('only a super admin or admin can delete a submission; balances follow', async () => {
+    const accountant = await app.staff('accountant');
+    const admin = await app.staff('admin');
+    const start = await collection();
+    const row = (await submit({ transactionId: 'TRX-0006', months: ['2026-04'] })).body.data;
+    await root.ok('POST', `/payment-submissions/${row.id}/review`, { decision: 'verified' }, 200);
+    assert.equal(await collection(), start + 500);
+    for (const who of [accountant, member]) assert.equal((await who.call('DELETE', `/payment-submissions/${row.id}`)).status, 403);
+    assert.equal(await collection(), start + 500);
+
+    await admin.ok('DELETE', `/payment-submissions/${row.id}`);
+    assert.equal(await collection(), start);
+    assert.equal((await root.call('GET', `/payment-submissions/${row.id}`)).status, 404);
+    assert.equal((await root.call('DELETE', `/payment-submissions/${row.id}`)).status, 404);
+    assert.equal(await app.models.LedgerEntry.countDocuments({ submissionId: row.id, active: true }), 0);
+    assert.deepEqual((await app.models.Payment.find({ submissionId: row.id }).lean()).map(deposit => deposit.status), ['reversed']);
+    const kept = await app.models.AuditLog.findOne({ action: 'Deleted payment', entityId: row.id }).lean();
+    assert.equal(kept.before.trxId, 'TRX-0006');
+
+    // The month and the transaction ID are free again, and a pending payment can be deleted too.
+    const again = await submit({ transactionId: 'TRX-0006', months: ['2026-04'] });
+    assert.equal(again.status, 201, JSON.stringify(again.body));
+    await root.ok('DELETE', `/admin/payment-submissions/${again.body.data.id}`);
+    assert.equal(await collection(), start);
+  });
+
   await t.test('admin panel records: name-based forms, edit and duplicate checks', async () => {
     const body = { member: 'Karim', date: '2026-03-01', amount: 500, month: '2026-01', category: 'savings', type: 'Cash', trxId: '', description: '',
       status: 'pending', source: 'admin', submittedAt: new Date().toISOString() };

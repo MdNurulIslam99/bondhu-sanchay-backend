@@ -4576,6 +4576,39 @@
             "description": "Error: { success: false, message, errors: { field: message }, error: { code, message } }"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Payment submissions"
+        ],
+        "summary": "Delete a payment (super admin or admin)",
+        "description": "Staff with permission payment-submissions.view",
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "2XX": {
+            "description": "Success: { success: true, data, message, pagination? }"
+          },
+          "4XX": {
+            "description": "Error: { success: false, message, errors: { field: message }, error: { code, message } }"
+          }
+        }
       }
     },
     "/admin/payment-submissions": {
@@ -5116,6 +5149,39 @@
             }
           }
         },
+        "responses": {
+          "2XX": {
+            "description": "Success: { success: true, data, message, pagination? }"
+          },
+          "4XX": {
+            "description": "Error: { success: false, message, errors: { field: message }, error: { code, message } }"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Payment submissions"
+        ],
+        "summary": "Delete a payment (super admin or admin)",
+        "description": "Staff with permission payment-submissions.view",
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "2XX": {
             "description": "Success: { success: true, data, message, pagination? }"
