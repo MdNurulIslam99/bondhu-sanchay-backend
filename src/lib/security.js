@@ -17,10 +17,13 @@ export const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 export const cookieOptions = { httpOnly: true, secure: env.secureCookies, sameSite: env.cookieSameSite, path: '/' };
 
 export const hashPassword = value => argon2.hash(value, { type: argon2.argon2id });
-const dummyHash = await hashPassword(randomToken());
+// Created on first use. No top-level `await` is allowed here: Vercel loads the app with `require()`,
+// which fails with ERR_REQUIRE_ASYNC_MODULE and takes the whole deployment down.
+let dummyHash;
 /** Always performs a hash check, so timing does not reveal whether an account exists. */
 export async function verifyPassword(hash, value) {
-  const matches = await argon2.verify(hash || dummyHash, value);
+  const dummy = await (dummyHash ??= hashPassword(randomToken()));
+  const matches = await argon2.verify(hash || dummy, value);
   return Boolean(hash) && matches;
 }
 
