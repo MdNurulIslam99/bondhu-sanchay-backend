@@ -131,6 +131,9 @@ Vercel runs `src/app.js` as a function; `server.js` is not used there.
 3. Redeploy after every change to the variables.
 4. Run `db:migrate`, `db:import` and `admin:create` from your computer against the same database.
 
+Vercel cannot `require()` ES-module-only packages. `overrides` in `package.json` keeps `htmlparser2`
+(used by `sanitize-html`) on a version that still supports it; `tests/deploy.test.js` checks this.
+
 Vercel limits request bodies to 4.5 MB, so larger images are refused, and rate limits count per
 function instance.
 
