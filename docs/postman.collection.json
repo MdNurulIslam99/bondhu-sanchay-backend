@@ -5319,6 +5319,32 @@
       "name": "5. Delete test records",
       "item": [
         {
+          "name": "Payment submissions: Delete a payment (super admin or admin)",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete a payment (super admin or admin).",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payment-submissions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment-submissions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newSubmissionId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
           "name": "Projects: Delete",
           "request": {
             "method": "DELETE",

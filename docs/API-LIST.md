@@ -167,6 +167,7 @@ Most paths also work with an `/admin` prefix (for example `/admin/members`), and
 | PATCH | `/payment-submissions/:id` | Edit a pending payment | `payment-submissions.update` |
 | POST | `/payment-submissions/:id/review` | Verify or reject a pending payment | `payment-submissions.update` |
 | POST | `/payment-submissions/:id/reopen` | Undo a review (super admin) | Super admin |
+| DELETE | `/payment-submissions/:id` | Delete a payment (super admin or admin) | `payment-submissions.view` |
 | POST | `/admin/payments/:id/approve` | Approve a payment (safe to repeat) | `payment-submissions.update` |
 | POST | `/admin/payments/:id/reject` | Reject a payment with a reason | `payment-submissions.update` |
 | GET | `/admin/ledger` | Ledger entries created by verified submissions (CSV with ?format=csv) | `payment-submissions.view` |
