@@ -89,7 +89,17 @@ export const Member = define('Member', 'members', {
   inactiveMonth: String,
 }, [[{ sl: 1 }, unique], [{ phone: 1 }, uniqueText('phone')], [{ name: 1 }]]);
 
-export const PAYMENT_TYPES = ['bKash', 'Nagad', 'Rocket', 'Bank', 'Cash', 'Other'];
+/** A membership application from the website. It becomes a member only when staff accept it. */
+export const MemberLead = define('MemberLead', 'member_leads', {
+  name: required(String),
+  phone: required(String),
+  nid: String,
+  address: String,
+  nominee: String,
+  note: String,
+}, [[{ phone: 1 }, unique], [{ createdAt: -1 }]]);
+
+export const PAYMENT_TYPES =['bKash', 'Nagad', 'Rocket', 'Bank', 'Cash', 'Other'];
 
 /** Monthly deposits. Only `verified` rows count. */
 export const Payment = define('Payment', 'payments', {
