@@ -173,6 +173,11 @@ test('payments, submissions, withdrawals, investments and reports', { timeout: 1
     const sheet = await root.get('/profit-sheet');
     assert.equal(sheet.through, '2026-03');
     assert.equal(sheet.totals.pending, sheet.totals.expected - sheet.totals.gross);
+    assert.equal(sheet.projects.every(row => Array.isArray(row.tranches)), true);
+    const own = sheet.projects.filter(row => !row.personal);
+    assert.equal(sheet.totals.net, own.reduce((total, row) => total + row.net, 0));
+    const open = (await app.request('/public/settings')).body.data;
+    assert.deepEqual([open.lastCollectionMonth, open.profitThroughMonth], ['2026-03', '2026-03']);
     for (const path of ['/reports/monthly.csv', '/profit-sheet.csv', '/dues?format=csv', '/admin/ledger?format=csv']) {
       assert.match((await root.call('GET', path)).headers.get('content-type'), /text\/csv/, path);
     }

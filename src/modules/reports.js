@@ -57,7 +57,7 @@ function investmentRows(ledger, share) {
     const invested = first ? account?.invested ?? 0 : 0;
     const profit = first ? account?.collected ?? 0 : 0;
     return { id: id(project._id), slug: project.slug, name: project.name, category: project.businessType, partner: account?.name ?? '', status: project.status,
-      invested, monthlyProfit: first ? account?.monthlyProfit ?? 0 : 0, profit, yourShare: share === null ? null : Math.round(profit * share) };
+      invested, monthlyProfit: first ? account?.monthlyProfit ?? 0 : 0, profit, yourShare: share === null ? null : Math.round((invested + profit) * share) };
   });
 }
 function sectorSplit(ledger) {
@@ -169,6 +169,8 @@ function reportRoutes(api) {
       return { accountId: account.id, account: account.name, name: own.map(row => row.name).join(', ') || `${account.name} (personal)`,
         projects: own.map(row => ({ id: id(row._id), slug: row.slug, name: row.name })), personal: account.invested === 0,
         invested: account.invested, monthlyProfit: account.monthlyProfit,
+        tranches: account.entries.filter(entry => entry.status !== 'planned')
+          .map(entry => ({ date: entry.investDate, amount: entry.amount, monthlyProfit: entry.monthlyProfit, firstMonth: entry.firstProfitMonth })),
         monthlyReturnPercent: account.invested ? Number((account.monthlyProfit / account.invested * 100).toFixed(2)) : 0,
         ...profitLedger(account, through) };
     });
@@ -180,7 +182,8 @@ function reportRoutes(api) {
     }
     send(res, { through, months, projects, costs,
       grid: months.map(key => ({ month: key, values: Object.fromEntries(projects.map(row => [row.accountId, row.months.find(item => item.month === key)?.received ?? 0])) })),
-      totals: Object.fromEntries(['invested', 'monthlyProfit', 'expected', 'gross', 'net', 'cost', 'pending'].map(key => [key, sum(projects, row => row[key])])) });
+      totals: { ...Object.fromEntries(['invested', 'monthlyProfit', 'expected', 'gross', 'net', 'cost', 'pending'].map(key => [key, sum(projects.filter(row => !row.personal), row => row[key])])),
+        personalProfit: sum(projects.filter(row => row.personal), row => row.net) } });
   };
   const formatQuery = z.strictObject({ format: z.enum(['json', 'csv']).optional() });
   api.get('/profit-sheet', { tag, summary: 'Per-project profit ledger', access: 'member', query: formatQuery }, profitSheet());
