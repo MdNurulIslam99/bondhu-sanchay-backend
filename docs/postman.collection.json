@@ -1,0 +1,5654 @@
+{
+  "info": {
+    "name": "Bondhu Sanchay API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "1. In **Variables**, set `email` and `password`, then Save.\n2. Run **1. Start here → Log in**. The token is saved automatically.\n3. A temporary password must be changed first: set `newPassword` and run **Change own password**.\n\n**POST, PATCH and DELETE requests write to the database in your .env file.** Payments, profit records and withdrawals can never be deleted, so try those on the local database.\nEdit and delete requests use the `new...Id` variables, filled when you create a record from Postman. List requests fill the `...Id` variables used for reading."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "newPassword",
+      "value": ""
+    },
+    {
+      "key": "myName",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "resetToken",
+      "value": ""
+    },
+    {
+      "key": "fileName",
+      "value": ""
+    },
+    {
+      "key": "memberId",
+      "value": ""
+    },
+    {
+      "key": "newMemberId",
+      "value": ""
+    },
+    {
+      "key": "paymentId",
+      "value": ""
+    },
+    {
+      "key": "newPaymentId",
+      "value": ""
+    },
+    {
+      "key": "submissionId",
+      "value": ""
+    },
+    {
+      "key": "newSubmissionId",
+      "value": ""
+    },
+    {
+      "key": "withdrawalId",
+      "value": ""
+    },
+    {
+      "key": "newWithdrawalId",
+      "value": ""
+    },
+    {
+      "key": "accountId",
+      "value": ""
+    },
+    {
+      "key": "newAccountId",
+      "value": ""
+    },
+    {
+      "key": "investmentId",
+      "value": ""
+    },
+    {
+      "key": "newInvestmentId",
+      "value": ""
+    },
+    {
+      "key": "profitId",
+      "value": ""
+    },
+    {
+      "key": "newProfitId",
+      "value": ""
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    },
+    {
+      "key": "newProjectId",
+      "value": ""
+    },
+    {
+      "key": "pageId",
+      "value": ""
+    },
+    {
+      "key": "newPageId",
+      "value": ""
+    },
+    {
+      "key": "sectionId",
+      "value": ""
+    },
+    {
+      "key": "newSectionId",
+      "value": ""
+    },
+    {
+      "key": "faqId",
+      "value": ""
+    },
+    {
+      "key": "newFaqId",
+      "value": ""
+    },
+    {
+      "key": "noticeId",
+      "value": ""
+    },
+    {
+      "key": "newNoticeId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "newUserId",
+      "value": ""
+    },
+    {
+      "key": "permissionId",
+      "value": ""
+    },
+    {
+      "key": "newPermissionId",
+      "value": ""
+    },
+    {
+      "key": "websiteAccountId",
+      "value": ""
+    },
+    {
+      "key": "newWebsiteAccountId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Start here",
+      "item": [
+        {
+          "name": "Is the server running?",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Is the database connected?",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ready",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ready"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Log in with email or mobile number",
+          "request": {
+            "method": "POST",
+            "description": "Log in with email or mobile number.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data.accessToken;",
+                  "  if (value) pm.collectionVariables.set('token', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signed-in user with pages and actions",
+          "request": {
+            "method": "GET",
+            "description": "Signed-in user with pages and actions.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change own password",
+          "request": {
+            "method": "POST",
+            "description": "Change own password.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "change-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{password}}\",\n  \"password\": \"{{newPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().data.accessToken);",
+                  "  pm.collectionVariables.set('password', pm.collectionVariables.get('newPassword'));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Exchange the current token for a new one",
+          "request": {
+            "method": "POST",
+            "description": "Exchange the current token for a new one.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data.accessToken;",
+                  "  if (value) pm.collectionVariables.set('token', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Public website (no login)",
+      "item": [
+        {
+          "name": "Settings, pages, FAQs, notices and projects in one response",
+          "request": {
+            "method": "GET",
+            "description": "Settings, pages, FAQs, notices and projects in one response.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/site-content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "site-content"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Organization details",
+          "request": {
+            "method": "GET",
+            "description": "Organization details.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "settings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member count and fund totals",
+          "request": {
+            "method": "GET",
+            "description": "Member count and fund totals.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Published FAQs",
+          "request": {
+            "method": "GET",
+            "description": "Published FAQs.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/faqs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "faqs"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Published notices, newest first",
+          "request": {
+            "method": "GET",
+            "description": "Published notices, newest first.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/notices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "notices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Active members with masked numbers",
+          "request": {
+            "method": "GET",
+            "description": "Active members with masked numbers.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "members"
+              ]
+            }
+          }
+        },
+        {
+          "name": "All active pages",
+          "request": {
+            "method": "GET",
+            "description": "All active pages.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/pages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "pages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "One active page with its sections",
+          "request": {
+            "method": "GET",
+            "description": "One active page with its sections.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/pages/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "pages",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "home"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Published projects",
+          "request": {
+            "method": "GET",
+            "description": "Published projects.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "projects"
+              ]
+            }
+          }
+        },
+        {
+          "name": "One published project",
+          "request": {
+            "method": "GET",
+            "description": "One published project.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/projects/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "projects",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "getech"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Published projects",
+          "request": {
+            "method": "GET",
+            "description": "Published projects.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/investments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "investments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "One published project",
+          "request": {
+            "method": "GET",
+            "description": "One published project.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/investments/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "investments",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "getech"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Apply to become a member (creates a pending member)",
+          "request": {
+            "method": "POST",
+            "description": "Apply to become a member (creates a pending member).",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/member-applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "member-applications"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Applicant\",\n  \"phone\": \"01700000098\",\n  \"nid\": \"\",\n  \"address\": \"Dhaka\",\n  \"nominee\": \"\",\n  \"website\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Public image file",
+          "request": {
+            "method": "GET",
+            "description": "Public image file.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/files/:name",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "files",
+                ":name"
+              ],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "{{fileName}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Website account and member",
+      "item": [
+        {
+          "name": "Create a website account",
+          "request": {
+            "method": "POST",
+            "description": "Create a website account.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "signup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Member\",\n  \"email\": \"postman.member@example.test\",\n  \"phone\": \"01700000099\",\n  \"password\": \"Postman12345\",\n  \"agreeToTerms\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data.user.id;",
+                  "  if (value) pm.collectionVariables.set('newWebsiteAccountId', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Change own password",
+          "request": {
+            "method": "POST",
+            "description": "Change own password.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{password}}\",\n  \"password\": \"{{newPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().data.accessToken);",
+                  "  pm.collectionVariables.set('password', pm.collectionVariables.get('newPassword'));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send a 6-digit reset code",
+          "request": {
+            "method": "POST",
+            "description": "Send a 6-digit reset code.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/password/forgot",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "password",
+                "forgot"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data.resetToken;",
+                  "  if (value) pm.collectionVariables.set('resetToken', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check the reset code",
+          "request": {
+            "method": "POST",
+            "description": "Check the reset code.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/password/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "password",
+                "verify-otp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\",\n  \"resetToken\": \"{{resetToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Set a new password after verifying the code",
+          "request": {
+            "method": "POST",
+            "description": "Set a new password after verifying the code.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/password/reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "password",
+                "reset"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{newPassword}}\",\n  \"resetToken\": \"{{resetToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update own name, email or picture",
+          "request": {
+            "method": "PATCH",
+            "description": "Update own name, email or picture.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{myName}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Own member account (member is null until approved)",
+          "request": {
+            "method": "GET",
+            "description": "Own member account (member is null until approved).",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/account",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "account"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Own submitted payments",
+          "request": {
+            "method": "GET",
+            "description": "Own submitted payments.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "mine"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "submittedAt",
+                  "disabled": true,
+                  "description": "submittedAt | date | amount | status | memberName"
+                },
+                {
+                  "key": "order",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                },
+                {
+                  "key": "format",
+                  "value": "csv",
+                  "disabled": true,
+                  "description": "json | csv"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true,
+                  "description": "pending | verified | approved | rejected"
+                },
+                {
+                  "key": "category",
+                  "value": "savings",
+                  "disabled": true,
+                  "description": "savings | profit"
+                },
+                {
+                  "key": "type",
+                  "value": "bKash",
+                  "disabled": true
+                },
+                {
+                  "key": "method",
+                  "value": "bkash",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "2026-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "2026-12-31",
+                  "disabled": true
+                },
+                {
+                  "key": "memberId",
+                  "value": "{{memberId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data[0] && body.data[0].id;",
+                  "  if (value) pm.collectionVariables.set('paymentId', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit a payment (login required)",
+          "request": {
+            "method": "POST",
+            "description": "Submit a payment (login required).",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/payment-submissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "public",
+                "payment-submissions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentDate\": \"2026-11-01\",\n  \"amount\": 500,\n  \"months\": [\n    \"2026-11\"\n  ],\n  \"category\": \"savings\",\n  \"method\": \"bkash\",\n  \"transactionId\": \"POSTMAN-001\",\n  \"payerAccount\": \"01700000000\",\n  \"description\": \"Postman test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Collection and profit by month",
+          "request": {
+            "method": "GET",
+            "description": "Collection and profit by month.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/monthly",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "monthly"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "disabled": true
+                },
+                {
+                  "key": "format",
+                  "value": "csv",
+                  "disabled": true,
+                  "description": "json | csv"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "The monthly report as CSV",
+          "request": {
+            "method": "GET",
+            "description": "The monthly report as CSV.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/monthly.csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "monthly.csv"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "disabled": true
+                },
+                {
+                  "key": "format",
+                  "value": "csv",
+                  "disabled": true,
+                  "description": "json | csv"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fund totals",
+          "request": {
+            "method": "GET",
+            "description": "Fund totals.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/fund-summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "fund-summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Who paid in one month",
+          "request": {
+            "method": "GET",
+            "description": "Who paid in one month.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/months/:key",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "months",
+                ":key"
+              ],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": "2026-11"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Per-project profit ledger",
+          "request": {
+            "method": "GET",
+            "description": "Per-project profit ledger.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profit-sheet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "profit-sheet"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv",
+                  "disabled": true,
+                  "description": "json | csv"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "The profit sheet as CSV",
+          "request": {
+            "method": "GET",
+            "description": "The profit sheet as CSV.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profit-sheet.csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "profit-sheet.csv"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv",
+                  "disabled": true,
+                  "description": "json | csv"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member submits a payment",
+          "request": {
+            "method": "POST",
+            "description": "Staff record a deposit, or a member submits a payment (body has \"category\").",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentDate\": \"2026-11-01\",\n  \"amount\": 500,\n  \"months\": [\n    \"2026-11\"\n  ],\n  \"category\": \"savings\",\n  \"method\": \"bkash\",\n  \"transactionId\": \"POSTMAN-002\",\n  \"payerAccount\": \"01700000000\",\n  \"description\": \"Postman test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const value = body.data.id;",
+                  "  if (value) pm.collectionVariables.set('newPaymentId', value);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Admin panel",
+      "item": [
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "List staff users",
+              "request": {
+                "method": "GET",
+                "description": "List staff users.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt",
+                      "disabled": true,
+                      "description": "createdAt | name | email | role | status"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "role",
+                      "value": "super_admin",
+                      "disabled": true,
+                      "description": "super_admin | admin | accountant | viewer"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true,
+                      "description": "active | inactive"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('userId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a user",
+              "request": {
+                "method": "GET",
+                "description": "Read a user.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{userId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create a staff user",
+              "request": {
+                "method": "POST",
+                "description": "Create a staff user.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman User\",\n  \"email\": \"postman.user@example.test\",\n  \"role\": \"viewer\",\n  \"status\": \"inactive\",\n  \"password\": \"Postman12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newUserId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update a user",
+              "request": {
+                "method": "PATCH",
+                "description": "Update a user.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newUserId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman User Updated\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Set or reset a user password",
+              "request": {
+                "method": "PUT",
+                "description": "Set or reset a user password.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/:id/password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    ":id",
+                    "password"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newUserId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"Postman67890\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "User permissions",
+          "item": [
+            {
+              "name": "List page permissions",
+              "request": {
+                "method": "GET",
+                "description": "List page permissions.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/user-permissions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "user-permissions"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt",
+                      "disabled": true,
+                      "description": "createdAt | status"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true,
+                      "description": "active | inactive"
+                    },
+                    {
+                      "key": "userId",
+                      "value": "{{userId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('permissionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one permission row",
+              "request": {
+                "method": "GET",
+                "description": "Read one permission row.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/user-permissions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "user-permissions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{permissionId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Give a user pages",
+              "request": {
+                "method": "POST",
+                "description": "Give a user pages.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/user-permissions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "user-permissions"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{newUserId}}\",\n  \"status\": \"active\",\n  \"pages\": [\n    \"faqs\",\n    \"notices\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newPermissionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Change a user's pages",
+              "request": {
+                "method": "PATCH",
+                "description": "Change a user's pages.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/user-permissions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "user-permissions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newPermissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"inactive\",\n  \"pages\": [\n    \"faqs\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Role actions",
+          "item": [
+            {
+              "name": "Actions allowed per role",
+              "request": {
+                "method": "GET",
+                "description": "Actions allowed per role.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/role-actions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "role-actions"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Replace role actions",
+              "request": {
+                "method": "PUT",
+                "description": "Replace role actions.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/role-actions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "role-actions"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"admin\": {\n    \"dashboard\": [\n      \"view\"\n    ],\n    \"members\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"payments\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"payment-submissions\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"dues\": [\n      \"view\"\n    ],\n    \"investments\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"projects\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"profits\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"withdrawals\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"page-names\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"page-sections\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"faqs\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"notices\": [\n      \"view\",\n      \"create\",\n      \"update\",\n      \"delete\"\n    ],\n    \"audit\": [\n      \"view\"\n    ],\n    \"settings\": [\n      \"view\",\n      \"update\"\n    ]\n  },\n  \"accountant\": {\n    \"dashboard\": [\n      \"view\"\n    ],\n    \"members\": [\n      \"view\",\n      \"update\"\n    ],\n    \"payments\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"payment-submissions\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"dues\": [\n      \"view\"\n    ],\n    \"investments\": [\n      \"view\"\n    ],\n    \"projects\": [\n      \"view\"\n    ],\n    \"profits\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"withdrawals\": [\n      \"view\",\n      \"create\",\n      \"update\"\n    ],\n    \"page-names\": [\n      \"view\"\n    ],\n    \"page-sections\": [\n      \"view\"\n    ],\n    \"faqs\": [\n      \"view\"\n    ],\n    \"notices\": [\n      \"view\"\n    ],\n    \"audit\": [\n      \"view\"\n    ]\n  },\n  \"viewer\": {\n    \"dashboard\": [\n      \"view\"\n    ],\n    \"members\": [\n      \"view\"\n    ],\n    \"payments\": [\n      \"view\"\n    ],\n    \"payment-submissions\": [\n      \"view\"\n    ],\n    \"dues\": [\n      \"view\"\n    ],\n    \"investments\": [\n      \"view\"\n    ],\n    \"projects\": [\n      \"view\"\n    ],\n    \"profits\": [\n      \"view\"\n    ],\n    \"withdrawals\": [\n      \"view\"\n    ],\n    \"page-names\": [\n      \"view\"\n    ],\n    \"page-sections\": [\n      \"view\"\n    ],\n    \"faqs\": [\n      \"view\"\n    ],\n    \"notices\": [\n      \"view\"\n    ],\n    \"audit\": [\n      \"view\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Restore the default role actions",
+              "request": {
+                "method": "POST",
+                "description": "Restore the default role actions.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/role-actions/reset",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "role-actions",
+                    "reset"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Member accounts",
+          "item": [
+            {
+              "name": "Website accounts and which member they match",
+              "request": {
+                "method": "GET",
+                "description": "Website accounts and which member they match.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-accounts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-accounts"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt",
+                      "disabled": true,
+                      "description": "createdAt | name | membershipStatus"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | approved | rejected | none"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('websiteAccountId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Confirm the account belongs to the member",
+              "request": {
+                "method": "POST",
+                "description": "Confirm the account belongs to the member.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-accounts/:id/approve",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-accounts",
+                    ":id",
+                    "approve"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{websiteAccountId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Refuse or revoke member access",
+              "request": {
+                "method": "POST",
+                "description": "Refuse or revoke member access.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/member-accounts/:id/reject",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "member-accounts",
+                    ":id",
+                    "reject"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{websiteAccountId}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Members",
+          "item": [
+            {
+              "name": "Members with dues (staff) or the member directory",
+              "request": {
+                "method": "GET",
+                "description": "Members with dues (staff) or the member directory.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/members",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "members"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "sl",
+                      "disabled": true,
+                      "description": "sl | name | status | createdAt | dueAmount | paidAmount"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | active | inactive"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('memberId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Member details, account and monthly history",
+              "request": {
+                "method": "GET",
+                "description": "Member details, account and monthly history.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/members/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "members",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{memberId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Add a member",
+              "request": {
+                "method": "POST",
+                "description": "Add a member.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/members",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "members"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Member\",\n  \"phone\": \"01700000097\",\n  \"nid\": \"\",\n  \"address\": \"Dhaka\",\n  \"nominee\": \"\",\n  \"joinDate\": \"2026-11-01\",\n  \"monthly\": 500,\n  \"status\": \"pending\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newMemberId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update a member",
+              "request": {
+                "method": "PATCH",
+                "description": "Update a member.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/members/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "members",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newMemberId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": \"Chattogram\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Approve, deactivate or reactivate",
+              "request": {
+                "method": "PATCH",
+                "description": "Approve, deactivate or reactivate.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/members/:id/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "members",
+                    ":id",
+                    "status"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newMemberId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"active\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Payment submissions",
+          "item": [
+            {
+              "name": "List submitted payments",
+              "request": {
+                "method": "GET",
+                "description": "List submitted payments.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "submittedAt",
+                      "disabled": true,
+                      "description": "submittedAt | date | amount | status | memberName"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | verified | approved | rejected"
+                    },
+                    {
+                      "key": "category",
+                      "value": "savings",
+                      "disabled": true,
+                      "description": "savings | profit"
+                    },
+                    {
+                      "key": "type",
+                      "value": "bKash",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "bkash",
+                      "disabled": true
+                    },
+                    {
+                      "key": "from",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2026-12-31",
+                      "disabled": true
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "q",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('submissionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a submitted payment",
+              "request": {
+                "method": "GET",
+                "description": "Read a submitted payment.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{submissionId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List submitted payments",
+              "request": {
+                "method": "GET",
+                "description": "List submitted payments.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/payments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "submittedAt",
+                      "disabled": true,
+                      "description": "submittedAt | date | amount | status | memberName"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | verified | approved | rejected"
+                    },
+                    {
+                      "key": "category",
+                      "value": "savings",
+                      "disabled": true,
+                      "description": "savings | profit"
+                    },
+                    {
+                      "key": "type",
+                      "value": "bKash",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "bkash",
+                      "disabled": true
+                    },
+                    {
+                      "key": "from",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2026-12-31",
+                      "disabled": true
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "q",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('submissionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a submitted payment",
+              "request": {
+                "method": "GET",
+                "description": "Read a submitted payment.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/payments/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "payments",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{submissionId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Record a payment on behalf of a member",
+              "request": {
+                "method": "POST",
+                "description": "Record a payment on behalf of a member.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": \"{{newMemberId}}\",\n  \"date\": \"2026-11-01\",\n  \"amount\": 500,\n  \"month\": \"2026-11\",\n  \"category\": \"savings\",\n  \"type\": \"Cash\",\n  \"trxId\": \"\",\n  \"description\": \"Postman test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newSubmissionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Edit a pending payment",
+              "request": {
+                "method": "PATCH",
+                "description": "Edit a pending payment.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSubmissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Verify or reject a pending payment",
+              "request": {
+                "method": "POST",
+                "description": "Verify or reject a pending payment.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions/:id/review",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions",
+                    ":id",
+                    "review"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSubmissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"decision\": \"rejected\",\n  \"note\": \"Postman test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Undo a review (super admin)",
+              "request": {
+                "method": "POST",
+                "description": "Undo a review (super admin).",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payment-submissions/:id/reopen",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payment-submissions",
+                    ":id",
+                    "reopen"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSubmissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Postman test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Approve a payment (safe to repeat)",
+              "request": {
+                "method": "POST",
+                "description": "Approve a payment (safe to repeat).",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/payments/:id/approve",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "payments",
+                    ":id",
+                    "approve"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSubmissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"confirmAmountMismatch\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Reject a payment with a reason",
+              "request": {
+                "method": "POST",
+                "description": "Reject a payment with a reason.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/payments/:id/reject",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "payments",
+                    ":id",
+                    "reject"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSubmissionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"note\": \"Postman test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Ledger entries created by verified submissions (CSV with ?format=csv)",
+              "request": {
+                "method": "GET",
+                "description": "Ledger entries created by verified submissions (CSV with ?format=csv).",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/ledger",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "ledger"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt",
+                      "disabled": true,
+                      "description": "createdAt | amount"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "type",
+                      "value": "bKash",
+                      "disabled": true,
+                      "description": "savings | profit"
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Monthly deposits",
+          "item": [
+            {
+              "name": "List deposits",
+              "request": {
+                "method": "GET",
+                "description": "List deposits.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "month",
+                      "disabled": true,
+                      "description": "month | amount | status | createdAt | paidDate"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | verified | reversed"
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "month",
+                      "value": "2026-11",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('paymentId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Record a deposit",
+              "request": {
+                "method": "POST",
+                "description": "Staff record a deposit, or a member submits a payment (body has \"category\").",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": \"{{newMemberId}}\",\n  \"month\": \"2026-10\",\n  \"amount\": 500,\n  \"paidDate\": \"2026-10-05\",\n  \"method\": \"Cash\",\n  \"trxId\": \"\",\n  \"status\": \"pending\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newPaymentId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a deposit",
+              "request": {
+                "method": "GET",
+                "description": "Read a deposit.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{paymentId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Edit a deposit",
+              "request": {
+                "method": "PATCH",
+                "description": "Edit a deposit.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newPaymentId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"paidDate\": \"2026-10-06\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Verify or reverse",
+              "request": {
+                "method": "PATCH",
+                "description": "Verify or reverse.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/:id/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    ":id",
+                    "status"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newPaymentId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"verified\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Withdrawals",
+          "item": [
+            {
+              "name": "List withdrawal requests",
+              "request": {
+                "method": "GET",
+                "description": "List withdrawal requests.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/withdrawals",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "withdrawals"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "date",
+                      "disabled": true,
+                      "description": "date | amount | status | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "disabled": true,
+                      "description": "pending | approved | paid | rejected"
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('withdrawalId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a request",
+              "request": {
+                "method": "GET",
+                "description": "Read a request.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/withdrawals/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "withdrawals",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{withdrawalId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create a request (starts pending)",
+              "request": {
+                "method": "POST",
+                "description": "Create a request (starts pending).",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/withdrawals",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "withdrawals"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": \"{{newMemberId}}\",\n  \"amount\": 1,\n  \"reason\": \"Postman test\",\n  \"date\": \"2026-11-01\",\n  \"status\": \"pending\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newWithdrawalId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Edit a request",
+              "request": {
+                "method": "PATCH",
+                "description": "Edit a request.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/withdrawals/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "withdrawals",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newWithdrawalId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "pending → approved → paid, or pending → rejected",
+              "request": {
+                "method": "PATCH",
+                "description": "pending → approved → paid, or pending → rejected.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/withdrawals/:id/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "withdrawals",
+                    ":id",
+                    "status"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newWithdrawalId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"rejected\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Investment accounts",
+          "item": [
+            {
+              "name": "Accounts with totals and month-by-month profit",
+              "request": {
+                "method": "GET",
+                "description": "Accounts with totals and month-by-month profit.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investment-accounts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investment-accounts"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('accountId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "One account in detail",
+              "request": {
+                "method": "GET",
+                "description": "One account in detail.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investment-accounts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investment-accounts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{accountId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create an account",
+              "request": {
+                "method": "POST",
+                "description": "Create an account.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investment-accounts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investment-accounts"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Account\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newAccountId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Rename an account everywhere",
+              "request": {
+                "method": "PATCH",
+                "description": "Rename an account everywhere.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investment-accounts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investment-accounts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newAccountId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Account 2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Investments",
+          "item": [
+            {
+              "name": "List invested amounts",
+              "request": {
+                "method": "GET",
+                "description": "List invested amounts.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "investDate",
+                      "disabled": true,
+                      "description": "investDate | amount | monthlyProfit | firstProfitMonth | status | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "running",
+                      "disabled": true,
+                      "description": "running | completed | planned"
+                    },
+                    {
+                      "key": "accountId",
+                      "value": "{{accountId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('investmentId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read an entry",
+              "request": {
+                "method": "GET",
+                "description": "Read an entry.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investments/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investments",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{investmentId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Add an investment (a new name creates the account)",
+              "request": {
+                "method": "POST",
+                "description": "Add an investment (a new name creates the account).",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investments"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accountId\": \"{{newAccountId}}\",\n  \"investDate\": \"2026-11-01\",\n  \"amount\": 1,\n  \"monthlyProfit\": 0,\n  \"firstProfitMonth\": \"2026-12\",\n  \"status\": \"planned\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newInvestmentId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Edit an entry",
+              "request": {
+                "method": "PATCH",
+                "description": "Edit an entry.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/investments/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "investments",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newInvestmentId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"monthlyProfit\": 0,\n  \"status\": \"planned\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profit and costs",
+          "item": [
+            {
+              "name": "List profit records with totals",
+              "request": {
+                "method": "GET",
+                "description": "List profit records with totals.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/profits",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "profits"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "month",
+                      "disabled": true,
+                      "description": "month | collected | cost | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "accountId",
+                      "value": "{{accountId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "account",
+                      "value": "Mukto",
+                      "disabled": true
+                    },
+                    {
+                      "key": "month",
+                      "value": "2026-11",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('profitId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read a record",
+              "request": {
+                "method": "GET",
+                "description": "Read a record.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/profits/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "profits",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{profitId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Record a month's profit (one per account and month)",
+              "request": {
+                "method": "POST",
+                "description": "Record a month's profit (one per account and month).",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/profits",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "profits"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accountId\": \"{{newAccountId}}\",\n  \"month\": \"2026-11\",\n  \"collected\": 0,\n  \"cost\": 0,\n  \"note\": \"Postman test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newProfitId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Edit a record",
+              "request": {
+                "method": "PATCH",
+                "description": "Edit a record.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/profits/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "profits",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newProfitId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"note\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Projects",
+          "item": [
+            {
+              "name": "List projects",
+              "request": {
+                "method": "GET",
+                "description": "List projects.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/projects",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "projects"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "startDate",
+                      "disabled": true,
+                      "description": "startDate | name | status | sortOrder | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "running",
+                      "disabled": true,
+                      "description": "running | completed | planned"
+                    },
+                    {
+                      "key": "businessType",
+                      "value": "Other",
+                      "disabled": true,
+                      "description": "Retail Shop | Trading & Distribution | Technology | Agriculture | Manufacturing | Service | Other"
+                    },
+                    {
+                      "key": "showOnWebsite",
+                      "value": "yes",
+                      "disabled": true,
+                      "description": "yes | no"
+                    },
+                    {
+                      "key": "accountId",
+                      "value": "{{accountId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('projectId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one",
+              "request": {
+                "method": "GET",
+                "description": "Read one.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/projects/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "projects",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{projectId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "description": "Create.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/projects",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "projects"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Project\",\n  \"accountId\": \"{{newAccountId}}\",\n  \"businessType\": \"Other\",\n  \"status\": \"planned\",\n  \"startDate\": \"2026-11-01\",\n  \"location\": \"Dhaka\",\n  \"contactPerson\": \"\",\n  \"contactMobile\": \"\",\n  \"showOnWebsite\": \"no\",\n  \"summary\": \"Postman test\",\n  \"description\": \"<p>Postman test</p>\",\n  \"images\": []\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newProjectId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PATCH",
+                "description": "Update.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/projects/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "projects",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newProjectId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Page names",
+          "item": [
+            {
+              "name": "List page names",
+              "request": {
+                "method": "GET",
+                "description": "List page names.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-names",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-names"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "order",
+                      "disabled": true,
+                      "description": "order | name | status | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true,
+                      "description": "active | inactive"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('pageId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one",
+              "request": {
+                "method": "GET",
+                "description": "Read one.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-names/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-names",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{pageId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "description": "Create.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-names",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-names"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Page\",\n  \"status\": \"inactive\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newPageId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PATCH",
+                "description": "Update.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-names/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-names",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newPageId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Test Page 2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Page sections",
+          "item": [
+            {
+              "name": "Next free position in a section",
+              "request": {
+                "method": "GET",
+                "description": "Next free position in a section.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-sections/next-position?pageId={{pageId}}&sectionHeader=Section 1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-sections",
+                    "next-position"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageId",
+                      "value": "{{pageId}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "sectionHeader",
+                      "value": "Section 1",
+                      "disabled": false
+                    },
+                    {
+                      "key": "ignoreId",
+                      "value": "{{sectionId}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List page sections",
+              "request": {
+                "method": "GET",
+                "description": "List page sections.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-sections",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-sections"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "displayOrder",
+                      "disabled": true,
+                      "description": "displayOrder | title | position | status | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "pageId",
+                      "value": "{{pageId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true,
+                      "description": "active | inactive"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('sectionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one",
+              "request": {
+                "method": "GET",
+                "description": "Read one.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-sections/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-sections",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{sectionId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "description": "Create.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-sections",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-sections"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pageId\": \"{{newPageId}}\",\n  \"sectionHeader\": \"Section 1\",\n  \"position\": 1,\n  \"title\": \"Postman test\",\n  \"subTitle\": \"\",\n  \"description\": \"<p>Hello</p>\",\n  \"images\": [],\n  \"status\": \"inactive\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newSectionId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PATCH",
+                "description": "Update.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/page-sections/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "page-sections",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newSectionId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "FAQs",
+          "item": [
+            {
+              "name": "List faqs",
+              "request": {
+                "method": "GET",
+                "description": "List faqs.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/faqs",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "faqs"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "order",
+                      "disabled": true,
+                      "description": "order | question | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "published",
+                      "value": "yes",
+                      "disabled": true,
+                      "description": "yes | no"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('faqId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one",
+              "request": {
+                "method": "GET",
+                "description": "Read one.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/faqs/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "faqs",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{faqId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "description": "Create.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/faqs",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "faqs"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"question\": \"Postman test question?\",\n  \"answer\": \"Postman test answer.\",\n  \"published\": \"no\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newFaqId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PATCH",
+                "description": "Update.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/faqs/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "faqs",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newFaqId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"answer\": \"Updated from Postman.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Notices",
+          "item": [
+            {
+              "name": "List notices",
+              "request": {
+                "method": "GET",
+                "description": "List notices.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/notices",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "notices"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "date",
+                      "disabled": true,
+                      "description": "date | title | published | createdAt"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "published",
+                      "value": "yes",
+                      "disabled": true,
+                      "description": "yes | no"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data[0] && body.data[0].id;",
+                      "  if (value) pm.collectionVariables.set('noticeId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Read one",
+              "request": {
+                "method": "GET",
+                "description": "Read one.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/notices/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "notices",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{noticeId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "description": "Create.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/notices",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "notices"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Postman test\",\n  \"body\": \"Postman test notice\",\n  \"date\": \"2026-11-27\",\n  \"published\": \"no\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.id;",
+                      "  if (value) pm.collectionVariables.set('newNoticeId', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PATCH",
+                "description": "Update.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/notices/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "notices",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{newNoticeId}}"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated from Postman\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Uploads",
+          "item": [
+            {
+              "name": "Upload one image (multipart field \"file\", max 5 MB)",
+              "request": {
+                "method": "POST",
+                "description": "Upload one image (multipart field \"file\", max 5 MB).",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/uploads",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "uploads"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": [],
+                      "description": "Choose a JPG, PNG or WEBP image (max 5 MB)"
+                    }
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code < 300) {",
+                      "  const body = pm.response.json();",
+                      "  const value = body.data.url.split('/').pop();",
+                      "  if (value) pm.collectionVariables.set('fileName', value);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Dashboard for staff or members",
+              "request": {
+                "method": "GET",
+                "description": "Dashboard for staff or members.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "dashboard"
+                  ],
+                  "query": [
+                    {
+                      "key": "month",
+                      "value": "2026-11",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dues",
+          "item": [
+            {
+              "name": "Dues of every member, with totals",
+              "request": {
+                "method": "GET",
+                "description": "Dues of every member, with totals.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/dues",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "dues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "sl",
+                      "disabled": true,
+                      "description": "sl | name | dueAmount | paidAmount | dueCount"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "memberId",
+                      "value": "{{memberId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true,
+                      "description": "active | inactive"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "all",
+                      "disabled": true,
+                      "description": "all | due | clear"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reports",
+          "item": [
+            {
+              "name": "Pending payments and balances",
+              "request": {
+                "method": "GET",
+                "description": "Pending payments and balances.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/overview",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "overview"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Audit log",
+          "item": [
+            {
+              "name": "Who changed what",
+              "request": {
+                "method": "GET",
+                "description": "Who changed what.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/audit-logs",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "audit-logs"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "at",
+                      "disabled": true,
+                      "description": "at | action | entity | userName"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc",
+                      "disabled": true,
+                      "description": "asc | desc"
+                    },
+                    {
+                      "key": "format",
+                      "value": "csv",
+                      "disabled": true,
+                      "description": "json | csv"
+                    },
+                    {
+                      "key": "user",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "userId",
+                      "value": "{{userId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "action",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "entity",
+                      "value": "members",
+                      "disabled": true
+                    },
+                    {
+                      "key": "from",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2026-12-31",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Read settings",
+              "request": {
+                "method": "GET",
+                "description": "Read settings.",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "settings"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update settings",
+              "request": {
+                "method": "PUT",
+                "description": "Update settings.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "settings"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"dueDay\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Close the profit sheet up to a month",
+              "request": {
+                "method": "PUT",
+                "description": "Close the profit sheet up to a month.",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/settings/profit-sheet-through",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "settings",
+                    "profit-sheet-through"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"month\": \"2026-10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Delete test records",
+      "item": [
+        {
+          "name": "Projects: Delete",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/projects/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newProjectId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Investments: Delete an entry (needs ?confirm=true when the account has profit records)",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete an entry (needs ?confirm=true when the account has profit records).",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/investments/:id?confirm=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "investments",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "confirm",
+                  "value": "true",
+                  "disabled": false,
+                  "description": "true | false"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newInvestmentId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Investment accounts: Delete an unused account",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete an unused account.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/investment-accounts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "investment-accounts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newAccountId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Page sections: Delete",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/page-sections/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "page-sections",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newSectionId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Page names: Delete",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/page-names/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "page-names",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newPageId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "FAQs: Delete",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "faqs",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newFaqId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Notices: Delete",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notices",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newNoticeId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "User permissions: Remove a permission row",
+          "request": {
+            "method": "DELETE",
+            "description": "Remove a permission row.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-permissions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-permissions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newPermissionId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Users: Delete a user and their page permissions",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete a user and their page permissions.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newUserId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member accounts: Delete a website account",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete a website account.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/member-accounts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "member-accounts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newWebsiteAccountId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Members: Delete a member without financial history",
+          "request": {
+            "method": "DELETE",
+            "description": "Delete a member without financial history.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/members/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "members",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{newMemberId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Log out",
+      "item": [
+        {
+          "name": "End this session",
+          "request": {
+            "method": "POST",
+            "description": "End this session.",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code < 300) pm.collectionVariables.set('token', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
