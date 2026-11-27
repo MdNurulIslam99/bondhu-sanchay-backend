@@ -341,6 +341,7 @@ Recorded from the backend with made-up data. Long lists are cut to the first ite
  "phone": "01700000000",
  "monthlyAmount": 500,
  "dueDay": 10,
+ "fine": 20,
  "collectionStart": "2026-01",
  "lastCollectionMonth": "2026-03",
  "profitThroughMonth": "2026-03",

@@ -880,7 +880,7 @@
         "tags": [
           "Users"
         ],
-        "summary": "List staff users",
+        "summary": "List all users: staff and website accounts",
         "description": "Staff with permission users.view",
         "security": [
           {
@@ -969,7 +969,8 @@
                 "super_admin",
                 "admin",
                 "accountant",
-                "viewer"
+                "viewer",
+                "member"
               ]
             }
           },

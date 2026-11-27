@@ -60,6 +60,22 @@ test('admin changes appear on the public website, and private data never does', 
     await root.ok('PUT', '/settings', { publicShowMoney: true });
   });
 
+  await t.test('project and money edits show on the very next public read, even for a cached client', async () => {
+    const entry = await root.ok('POST', '/investments', { name: 'Fresh', investDate: '2026-05-01', amount: 1000, monthlyProfit: 50, firstProfitMonth: '2026-05' });
+    const project = await root.ok('POST', '/projects', { name: 'Farm', account: 'Fresh', businessType: 'Agriculture', startDate: '2026-05-01', showOnWebsite: 'no' });
+    const read = async () => (await open('/public/projects')).find(row => row.slug === 'farm');
+    assert.equal(await read(), undefined);
+    await root.ok('PATCH', `/projects/${project.id}`, { showOnWebsite: 'yes' });
+    const changes = { name: 'Fish Farm', summary: 'New summary', status: 'completed', location: 'Jashore', startDate: '2026-05-02', images: ['https://images.example.com/b.jpg'] };
+    await root.ok('PATCH', `/projects/${project.id}`, changes);
+    const shown = await read();
+    for (const [key, value] of Object.entries(changes)) assert.deepEqual(shown[key], value, key);
+    await root.ok('PATCH', `/investments/${entry.id}`, { amount: 2500 });
+    const again = await app.request('/public/projects', { headers: { 'if-modified-since': new Date(Date.now() + 60000).toUTCString(), 'cache-control': 'max-age=0' } });
+    assert.equal(again.status, 200);
+    assert.equal(again.body.data.find(row => row.slug === 'farm').amount, 2500);
+  });
+
   await t.test('FAQs, ETag revalidation and member applications', async () => {
     const faq = await root.ok('POST', '/faqs', { question: 'Q?', answer: 'A.' });
     const first = await app.request('/public/faqs');
