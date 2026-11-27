@@ -60,17 +60,13 @@ function summary(ledger) {
 
 export default function publicRoutes(api) {
   const tag = 'Public website';
-  // Browsers may keep a copy but must check it is current (Express adds the ETag).
-  const publish = (res, data, updatedAt) => {
+  // Browsers may keep a copy but must check it is current. Express makes the ETag from the response itself,
+  // so every change shows. No Last-Modified date: money and member changes would not move it.
+  const publish = (res, data) => {
     res.set('Cache-Control', 'public, max-age=0, must-revalidate');
-    if (updatedAt) res.set('Last-Modified', new Date(updatedAt).toUTCString());
     send(res, data);
   };
-  const get = (path, text_, read) => api.get(path, { tag, summary: text_ }, async (req, res) => {
-    // Read side by side, so the visitor does not wait for one database round trip after another.
-    const [settings, data] = await Promise.all([getSettings(), read(req)]);
-    publish(res, data, settings.contentUpdatedAt);
-  });
+  const get = (path, text_, read) => api.get(path, { tag, summary: text_ }, async (req, res) => publish(res, await read(req)));
 
   get('/public/site-content', 'Settings, pages, FAQs, notices and projects in one response', async () => {
     const [pages, faqs, notices, ledger] = await Promise.all([publicPages(), publicFaqs(), publicNotices(), loadLedger()]);

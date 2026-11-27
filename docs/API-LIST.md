@@ -106,7 +106,7 @@ Most paths also work with an `/admin` prefix (for example `/admin/members`), and
 
 | Method | Path | Purpose | Access |
 | --- | --- | --- | --- |
-| GET | `/users` | List staff users | `users.view` |
+| GET | `/users` | List all users: staff and website accounts | `users.view` |
 | GET | `/users/:id` | Read a user | `users.view` |
 | POST | `/users` | Create a staff user | `users.create` |
 | PUT | `/users/:id` | Update a user | `users.update` |

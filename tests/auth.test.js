@@ -74,6 +74,22 @@ test('authentication, permissions, member privacy and password reset', { timeout
     assert.deepEqual(me.actions.faqs, ['view', 'create', 'update', 'delete']);
   });
 
+  await t.test('the user list includes website accounts, which cannot be changed there', async () => {
+    const signup = await app.request('/auth/signup', { method: 'POST', body: { name: 'Web Person', email: 'web@example.test', phone: '01755555555', password: PASSWORD, agreeToTerms: true } });
+    const { id } = signup.body.data.user;
+    const everyone = await root.get('/users?limit=500');
+    assert.equal(everyone.some(user => user.id === id && user.role === 'member'), true);
+    assert.equal(everyone.some(user => user.role === 'super_admin'), true);
+    assert.equal(everyone.some(user => 'passwordHash' in user), false);
+    assert.deepEqual((await root.get('/users?role=member')).map(user => user.id), [id]);
+    assert.equal((await root.get('/users?role=viewer')).some(user => user.role !== 'viewer'), false);
+    assert.equal((await root.get(`/users/${id}`)).role, 'member');
+    assert.equal((await root.call('PATCH', `/users/${id}`, { role: 'admin' })).status, 404);
+    assert.equal((await root.call('PUT', `/users/${id}/password`, { password: 'Another123' })).status, 404);
+    assert.equal((await root.call('DELETE', `/users/${id}`)).status, 404);
+    assert.equal((await root.call('POST', '/user-permissions', { userId: id, pages: ['faqs'] })).status, 422);
+  });
+
   await t.test('users: temporary password, self protection and last super admin', async () => {
     const created = await root.ok('POST', '/users', { name: 'New Staff', email: 'new@example.test', role: 'accountant', status: 'active', password: 'Temp12345' });
     assert.equal(created.passwordHash, undefined);

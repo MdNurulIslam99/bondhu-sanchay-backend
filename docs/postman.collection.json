@@ -1391,10 +1391,10 @@
           "name": "Users",
           "item": [
             {
-              "name": "List staff users",
+              "name": "List all users: staff and website accounts",
               "request": {
                 "method": "GET",
-                "description": "List staff users.",
+                "description": "List all users: staff and website accounts.",
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/users",
@@ -1444,7 +1444,7 @@
                       "key": "role",
                       "value": "super_admin",
                       "disabled": true,
-                      "description": "super_admin | admin | accountant | viewer"
+                      "description": "super_admin | admin | accountant | viewer | member"
                     },
                     {
                       "key": "status",

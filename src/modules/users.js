@@ -6,7 +6,7 @@ import { contains, send, sendList, sendRows } from '../lib/respond.js';
 import { activeStatus, email, listQuery, objectId, optionalPhone, password, text } from '../lib/schemas.js';
 import { hashPassword } from '../lib/security.js';
 import { actorOf, audit, lock, transaction, view } from '../lib/tx.js';
-import { Member, RoleAction, STAFF_ROLES, Session, Submission, User, UserPermission } from '../models/index.js';
+import { Member, ROLES, RoleAction, STAFF_ROLES, Session, Submission, User, UserPermission } from '../models/index.js';
 
 // "messages" is switched off; it is ignored rather than rejected so an older panel can still save.
 const IGNORED = new Set(['messages']);
@@ -35,13 +35,17 @@ const updateUser = z.strictObject(userFields).partial();
 
 function userRoutes(api) {
   const tag = 'Users';
-  const query = listQuery({ sort: ['createdAt', 'name', 'email', 'role', 'status'], filters: { role: z.enum(STAFF_ROLES).optional(), status: activeStatus.optional() } });
-  api.get('/users', { tag, summary: 'List staff users', access: ['users', 'view'], query }, async (req, res) => {
+  const query = listQuery({ sort: ['createdAt', 'name', 'email', 'role', 'status'], filters: { role: z.enum(ROLES).optional(), status: activeStatus.optional() } });
+  api.get('/users', { tag, summary: 'List all users: staff and website accounts', access: ['users', 'view'], query }, async (req, res) => {
     const { role, status, search } = req.input.query;
-    const filter = { role: role || { $in: STAFF_ROLES }, ...(status ? { status } : {}), ...(search ? { $or: [{ name: contains(search) }, { email: contains(search) }] } : {}) };
+    const filter = { ...(role ? { role } : {}), ...(status ? { status } : {}), ...(search ? { $or: [{ name: contains(search) }, { email: contains(search) }] } : {}) };
     await sendList(res, { model: User, filter, query: req.input.query, map: rows => rows.map(staffView), name: 'users', columns: ['id', 'name', 'email', 'role', 'status'] });
   });
-  api.get('/users/:id', { tag, summary: 'Read a user', access: ['users', 'view'] }, async (req, res) => send(res, staffView(await findStaff(req.input.params.id))));
+  api.get('/users/:id', { tag, summary: 'Read a user', access: ['users', 'view'] }, async (req, res) => {
+    const user = await User.findById(req.input.params.id);
+    if (!user) throw notFound('User not found');
+    send(res, staffView(user));
+  });
   api.post('/users', { tag, summary: 'Create a staff user', access: ['users', 'create'], body: createUser }, async (req, res) => {
     const { password: secret, phone, status = 'active', ...input } = req.input.body;
     const passwordHash = secret ? await hashPassword(secret) : undefined;
